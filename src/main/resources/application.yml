@@ -1,0 +1,197 @@
+spring:
+    profiles:
+        active: local
+---
+spring:
+    profiles: local
+    application:
+        name: '@project.name@'
+    sleuth:
+        sampler:
+            probability: 1.0
+    zipkin:
+        base-url: http://localhost:9090/
+info:
+    app:
+        artifactId: '@project.artifactId@'
+        description: '@project.description@'
+        groupId: '@project.groupId@'
+        name: '@project.name@'
+        version: '@project.version@'
+server:
+    host: localhost
+    port: 8079
+ribbon:
+    ReadTimeout: 60000
+    connection-timeout: 3000
+feign:
+    hystrix:
+        enabled: true
+eureka:
+    client:
+        enabled: true
+        fetch-registry: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://${server.host}:${server.port}/eureka/
+    instance:
+        prefer-ip-address: true
+        healthCheckUrl: http://${server.host}:${server.port}/actuator/health
+        homePageUrl: http://${server.host}:${server.port}/
+        instance-id: ${spring.application.name}:${server.port}
+        leaseExpirationDurationInSeconds: 300
+        leaseRenewalIntervalInSeconds: 300
+        statusPageUrl: http://${server.host}:${server.port}/actuator/info
+    environment: dev
+logging:
+    level:
+        org:
+            springframework:
+                web:
+                    servlet:
+                        DispatcherServlet: DEBUG
+management:
+    endpoint:
+        health:
+            show-details: always
+        shutdown:
+            enabled: true
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+    health:
+        db:
+            enabled: true
+        defaults:
+            enabled: true
+        diskspace:
+            enabled: true
+zuul:
+    ignoredHeaders: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
+    ribbon:
+        eager-load:
+            enabled: true
+    routes:
+        mentor-service:
+            path: /search/**
+            sensitiveHeaders: Cookie,Set-Cookie
+            serviceId: search-service
+            stripPrefix: false
+        payment-service:
+            path: /payments/**
+            sensitiveHeaders: Cookie,Set-Cookie
+            serviceId: payment-service
+            stripPrefix: false
+        technology-service:
+            path: /skills/**
+            sensitiveHeaders: 'Cookie,Set-Cookie '
+            serviceId: technology-service
+            stripPrefix: false
+        training-service:
+            path: /trainings/**
+            sensitiveHeaders: Cookie,Set-Cookie
+            serviceId: training-service
+            stripPrefix: false
+        user-service:
+            path: /users/**
+            sensitiveHeaders: Cookie,Set-Cookie
+            serviceId: user-service
+            stripPrefix: false
+
+---
+spring:
+    profiles: k8s
+    application:
+        name: '@project.name@'
+    sleuth:
+        sampler:
+            probability: 1.0
+    zipkin:
+        base-url: http://zipkin-server:10002/
+info:
+    app:
+        artifactId: '@project.artifactId@'
+        description: '@project.description@'
+        groupId: '@project.groupId@'
+        name: '@project.name@'
+        version: '@project.version@'
+server:
+    port: 10003
+ribbon:
+    ReadTimeout: 60000
+    connection-timeout: 3000
+feign:
+    hystrix:
+        enabled: true
+eureka:
+    client:
+        enabled: true
+        fetch-registry: true
+        fetchRegistry: true
+        serviceUrl:
+            defaultZone: http://eureka-server:10001/eureka/
+    instance:
+        prefer-ip-address: true
+        healthCheckUrl: http://${spring.application.name}:${server.port}/actuator/health
+        homePageUrl: http://${spring.application.name}:${server.port}/
+        instance-id: ${spring.application.name}:${server.port}
+        leaseExpirationDurationInSeconds: 300
+        leaseRenewalIntervalInSeconds: 300
+        statusPageUrl: http://${spring.application.name}:${server.port}/actuator/info
+    environment: k8s
+logging:
+    level:
+        org:
+            springframework:
+                web:
+                    servlet:
+                        DispatcherServlet: DEBUG
+management:
+    endpoint:
+        health:
+            show-details: always
+        shutdown:
+            enabled: true
+    endpoints:
+        web:
+            exposure:
+                include: '*'
+    health:
+        db:
+            enabled: true
+        defaults:
+            enabled: true
+        diskspace:
+            enabled: true
+zuul:
+    ignoredHeaders: Access-Control-Allow-Credentials, Access-Control-Allow-Origin
+    ribbon:
+        eager-load:
+            enabled: true
+    routes:
+        mentor-service:
+            path: /search/**
+            sensitiveHeaders: Cookie,Set-Cookie
+            serviceId: search-service
+            stripPrefix: false
+        payment-service:
+            path: /payments/**
+            sensitiveHeaders: Cookie,Set-Cookie
+            serviceId: payment-service
+            stripPrefix: false
+        technology-service:
+            path: /skills/**
+            sensitiveHeaders: 'Cookie,Set-Cookie '
+            serviceId: technology-service
+            stripPrefix: false
+        training-service:
+            path: /trainings/**
+            sensitiveHeaders: Cookie,Set-Cookie
+            serviceId: training-service
+            stripPrefix: false
+        user-service:
+            path: /users/**
+            sensitiveHeaders: Cookie,Set-Cookie
+            serviceId: user-service
+            stripPrefix: false
