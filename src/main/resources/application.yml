@@ -33,7 +33,7 @@ eureka:
         fetch-registry: true
         fetchRegistry: true
         serviceUrl:
-            defaultZone: http://${server.host}:${server.port}/eureka/
+            defaultZone: http://${server.host}:8761/eureka/
     instance:
         prefer-ip-address: true
         healthCheckUrl: http://${server.host}:${server.port}/actuator/health
