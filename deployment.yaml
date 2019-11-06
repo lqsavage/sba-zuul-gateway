@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zuul-gateway
+  namespace: sba
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zuul-gateway
+  template:
+    metadata:
+      labels:
+        app: zuul-gateway
+    spec:
+      containers:
+        - name: sit-bmw-model
+          image: registry.cn-hangzhou.aliyuncs.com/dev_savage/sba-zuul:{version}
+          ports:
+            - name: http-port
+              containerPort: 10003
+          env:
+            - name: spring_profiles_active
+              value: k8s
+      imagePullSecrets:
+        - name: sbasecret
